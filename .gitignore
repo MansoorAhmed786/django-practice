@@ -1,0 +1,4 @@
+env
+location
+practicemodels/__pycache__/
+website/__pycache__/
