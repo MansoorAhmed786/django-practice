@@ -104,15 +104,35 @@ class Book(models.Model):
     def bestseller(average_rating):
         return average_rating >= 4.5
 
+
     # ForeignKey to relate to another model (Author in this case)
     author = models.ForeignKey('Author', on_delete=models.CASCADE)
 
-    # # ManyToManyField to relate to multiple genres
+    # Generic foreign key is also like other foriegn keys 
+    # and to make one to many releationship
+    # but genericForeignKey can be used anywhere in the project
+    #  and can make relation with any model class
+
+    # ManyToManyField to relate to multiple genres
     # genres = models.ManyToManyField('Author')
-    # # OnetoOne releation
+    # OnetoOne releation
     # ant=models.OneToOneField('Author')    
+
+class ProxyBook(Book):
+    class Meta:
+        proxy = True
+
+    def __str__(self):
+        return self.title.upper()
+
 
 # Author model for the ForeignKey relationship
 class Author(models.Model):
     id = models.AutoField( primary_key=True)
     name = models.CharField(max_length=100)
+<<<<<<< Updated upstream
+=======
+
+    def __str__(self):
+        return self.name
+>>>>>>> Stashed changes
