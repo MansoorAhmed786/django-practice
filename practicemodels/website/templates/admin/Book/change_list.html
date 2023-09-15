@@ -1,0 +1,10 @@
+{% extends "admin/change_list.html" %}
+{% load i18n static admin_modify admin_list %}
+
+{% block object-tools-items %}
+<li>
+    <a href="{% url 'admin:change-availability' %}" class="btn btn-high btn-success">Change Availability</a>
+</li>
+{{success}}
+{{ block.super }}
+{% endblock %}

@@ -68,7 +68,7 @@ class Book(models.Model):
     author_email = models.EmailField(validators=[EmailValidator])
 
     # SlugField for generating slugs from the book title
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(null=True)
 
     # FileField for the book cover image
     cover_image = models.ImageField(upload_to='location',validators=[FileExtensionValidator(allowed_extensions=('png','pdf'))])
@@ -116,3 +116,6 @@ class Book(models.Model):
 class Author(models.Model):
     id = models.AutoField( primary_key=True)
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
