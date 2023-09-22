@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'app.middleware.LogUserIPMiddleware',
+    'app.middleware.LogUserIpMiddleware',
 ]
 
 ROOT_URLCONF = 'task1.urls'
@@ -130,3 +130,4 @@ AUTH_USER_MODEL = "app.CustomUser"
 GOLD = 10
 SILVER = 7
 BRONZE = 5
+TIME_LIMIT = 60
