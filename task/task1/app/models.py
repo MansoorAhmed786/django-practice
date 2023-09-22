@@ -30,14 +30,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=30)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    date_joined = models.DateTimeField(default=timezone.now)
+
     count = models.IntegerField(editable=False,default=0)
     ip_address = models.CharField(editable=False,max_length=50)
+    date_joined = models.DateTimeField(default=timezone.now)
     updated_time = models.DateTimeField(default=timezone.now)
-    def set_ip(request):
-        client_ip = request.META.get('REMOTE_ADDR')
-        ip_object = CustomUser(ip_address=client_ip)
-        ip_object.save()
     group_type = models.CharField(
         max_length=10,
         choices=GROUP_CHOICES,
@@ -45,9 +42,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]
+    
     def __str__(self):
         return self.email
     
+    def set_ip(request):
+        client_ip = request.META.get('REMOTE_ADDR')
+        ip_object = CustomUser(ip_address=client_ip)
+        ip_object.save()
+
 class Book(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
