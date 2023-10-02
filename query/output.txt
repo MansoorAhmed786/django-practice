@@ -1,0 +1,134 @@
+.all()
+it will return all objects
+list(Book.objects.all())
+[<Book: Programming Fundamental>, <Book: object Oriented Programming>, <Book: Data Structures and algorithm>, <Book: Medical Sciences>, 
+<Book: Chess>]
+
+.filter()
+it will return the objects on specific condition given as arguments in filter
+>>> Book.objects.filter(author__username__username='mansoor')
+<QuerySet [<Book: Programming Fundamental>, <Book: object Oriented Programming>, <Book: Data Structures and algorithm>]>
+
+.exclude()
+it will exclude the object that have specific condition givin as parameters
+Book.objects.exclude(author__username__username='waleed')
+<QuerySet [<Book: Programming Fundamental>, <Book: object Oriented Programming>, <Book: Data Structures and algorithm>, <Book: Chess>]>
+
+.annotate()
+annotate is used to return value such as avg,count,min,max
+
+.allias()
+it is almost same as annotate but it will name it
+
+.order_by()
+it will order the elements
+>>> Book.objects.order_by('name')
+<QuerySet [<Book: Chess>, <Book: Data Structures and algorithm>, <Book: Medical Sciences>, <Book: Programming Fundamental>, <Book: object Oriented Programming>]>
+
+Author.objects.order_by("book__name", "name")  
+<QuerySet [<Author: BimalJalal>, <Author: admin>, <Author: Talha>, <Author: mansoor>, <Author: waleed>, <Author: mansoor>, <Author: mansoor>]>
+it will order by book name first and then by name
+
+>>> Book.objects.order_by("author__username") 
+<QuerySet [<Book: Chess>, <Book: Programming Fundamental>, <Book: object Oriented Programming>, <Book: Data Structures and algorithm>, <Book: Medical Sciences>]>
+
+we can use - before the field name for decending order
+
+>>> Book.objects.order_by("-author__username") 
+<QuerySet [<Book: Medical Sciences>, <Book: Programming Fundamental>, <Book: object Oriented Programming>, <Book: Data Structures and algorithm>, <Book: Chess>]>
+
+revserse()
+>>> Book.objects.reverse()[:1] 
+<QuerySet [<Book: Programming Fundamental>]>
+
+distict
+Author.objects.distinct() 
+<QuerySet [<Author: BimalJalal>, <Author: admin>, <Author: Talha>, <Author: mansoor>, <Author: waleed>]>
+
+
+>>> Book.objects.filter(author__username__username='mansoor').values()
+<QuerySet [{'id': 1, 'name': 'Programming Fundamental', 'author_id': 4}, {'id': 2, 'name': 'object Oriented Programming', 'author_id': 4}, {'id': 3, 'name': 'Data Structures and algorithm', 'author_id': 4}]>
+
+
+>>> Book.objects.order_by("-id").values() 
+<QuerySet [{'id': 5, 'name': 'Chess', 'author_id': 3}, {'id': 4, 'name': 'Medical Sciences', 'author_id': 5}, {'id': 3, 'name': 'Data Structures and algorithm', 'author_id': 4}, {'id': 2, 'name': 'object Oriented Programming', 'author_id': 4}, {'id': 1, 'name': 'Programming Fundamental', 'author_id': 4}]>
+
+
+
+
+>>> Book.objects.values("id").reverse()[:1]  
+<QuerySet [{'id': 5}]>
+
+
+>>> Author.objects.dates("date_of_birth","year") 
+<QuerySet [datetime.date(2022, 1, 1), datetime.date(2023, 1, 1)]>
+>>> Author.objects.dates("date_of_birth","day")  
+<QuerySet [datetime.date(2022, 7, 1), datetime.date(2023, 9, 18), datetime.date(2023, 9, 28)]>
+
+>>> Author.objects.dates("date_of_birth","week",order="DESC") 
+<QuerySet [datetime.date(2023, 9, 25), datetime.date(2023, 9, 18), datetime.date(2022, 6, 27)]>
+
+
+>> Book.objects.none()
+<QuerySet []>
+
+>>> Book.objects.all()  
+<QuerySet [<Book: Programming Fundamental>, <Book: object Oriented Programming>, <Book: Data Structures and algorithm>, <Book: Medical Sciences>, <Book: Chess>]>
+
+>>> qs1 = Author.objects.values_list("username")
+>>> qs2 = Book.objects.values_list("name")      
+>>> qs1.union(qs2)                 
+<QuerySet [(1,), (2,), (3,), (4,), (5,), ('Chess',), ('Data Structures and algorithm',), ('Medical Sciences',), ('Programming Fundamental',), ('object Oriented Programming',)]>
+
+>>> qs1.intersection(qs2, qs1) 
+<QuerySet []>
+
+>>> Book.objects.get(id=5)
+<Book: Chess>
+
+
+>>> Book.objects.select_related('author__username')          
+<QuerySet [<Book: Programming Fundamental>, <Book: object Oriented Programming>, <Book: Data Structures and algorithm>, <Book: Medical Sciences>, <Book: Chess>]>
+
+select_related is not applicable to ManyToMany relationships, Django provides prefetch_related to optimize queries involving ManyToMany relationships and related objects.
+
+
+>>> Book.objects.filter(name__startswith='p') 
+<QuerySet [<Book: Programming Fundamental>]>
+
+>>> Book.objects.extra(where=["name=%s"], params=["Programming Fundamental"])
+<QuerySet [<Book: Programming Fundamental>]>
+
+>>> Book.objects.filter(id=1) & Book.objects.filter(name='pf')
+<QuerySet []>
+>>> Book.objects.filter(id=1) | Book.objects.filter(name='pf') 
+<QuerySet [<Book: Programming Fundamental>]>
+>>> Book.objects.filter(id=1) | Book.objects.filter(name='Programming Fundamental')
+<QuerySet [<Book: Programming Fundamental>]>
+>>> Book.objects.filter(id=1) & Book.objects.filter(name='Programming Fundamental') 
+<QuerySet [<Book: Programming Fundamental>]>
+
+
+>>> Book.objects.filter(id=1).filter(name='Programming Fundamental')                
+<QuerySet [<Book: Programming Fundamental>]>
+
+
+it will return the object with following properties if the object doesnot found it will create an object with same properties
+>>> Book.objects.get_or_create(id=5)
+(<Book: Chess>, False)
+
+
+all the fields and default value
+
+>>> Book.objects.latest('name')
+<Book: object Oriented Programming>
+>>> Book.objects.latest('author') 
+<Book: Medical Sciences>
+>>> Book.objects.earliest('author') 
+<Book: Chess>
+>>> Book.objects.last()         
+<Book: Chess>
+
+>>> from django.db.models import Count
+>>> Book.objects.aggregate(Count("name"))
+{'name__count': 5}
